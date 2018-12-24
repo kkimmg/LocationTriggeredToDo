@@ -5,7 +5,10 @@ import android.location.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultLocationEntry extends ArrayList<IAlermEntry> implements ILocationEntry {
+/**
+ * 場所
+ */
+public class DefaultLocationEntry extends ArrayList<IAlarmEntry> implements ILocationEntry {
     /**
      * ToDoId
      */
@@ -13,7 +16,7 @@ public class DefaultLocationEntry extends ArrayList<IAlermEntry> implements ILoc
     /**
      * ID
      */
-    private long id;
+    private long id = 0;
     /**
      * 名前
      */
@@ -22,6 +25,10 @@ public class DefaultLocationEntry extends ArrayList<IAlermEntry> implements ILoc
      * 高度,緯度,経度,判定する距離
      */
     private double latitude, longitude;
+    /**
+     * 状態
+     */
+    private int status;
 
     /**
      * 範囲内にあるか？
@@ -31,10 +38,10 @@ public class DefaultLocationEntry extends ArrayList<IAlermEntry> implements ILoc
      * @return アラームのリスト
      */
     @Override
-    public List<IAlermEntry> getAlermEntries(Location location) {
-        List<IAlermEntry> ret = new ArrayList<>();
-        for (IAlermEntry cld : this) {
-            if (cld.getStatus() == IAlermEntry.STATUS_NOTYET) {
+    public List<IAlarmEntry> getAlermEntries(Location location) {
+        List<IAlarmEntry> ret = new ArrayList<>();
+        for (IAlarmEntry cld : this) {
+            if (cld.getStatus() == IAlarmEntry.STATUS_NOT_YET) {
                 if (isNearBy(location, cld.getDistance())) {
                     ret.add(cld);
                 }
@@ -160,5 +167,24 @@ public class DefaultLocationEntry extends ArrayList<IAlermEntry> implements ILoc
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * タスクの状態
+     *
+     * @return 0:オープン<br>1:クローズ
+     */
+    @Override
+    public int getStatus() {
+        return status;
+    }
+
+    /**
+     * タスクの状態
+     *
+     * @param status タスクの状態
+     */
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

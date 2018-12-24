@@ -7,11 +7,11 @@ import java.io.Serializable;
 /**
  * 通知情報
  */
-public interface IAlermEntry extends Serializable {
+public interface IAlarmEntry extends Serializable {
     /**
      * まだ通知されていない
      */
-    public static final int STATUS_NOTYET = 0;
+    public static final int STATUS_NOT_YET = 0;
     /**
      * 通知中
      */
@@ -25,13 +25,24 @@ public interface IAlermEntry extends Serializable {
      */
     public static final int STATUS_NOTICED = 3;
     /**
+     * 削除済
+     */
+    public static final int STATUS_DELETED = 4;
+    /**
      * 範囲内に入ったとき通知する
      */
-    public static final int TIMING_ARRIVAL = 0;
+    public static final int TIMING_APPROACHING = 2;
     /**
      * 範囲外に出たとき通知する
      */
     public static final int TIMING_LEAVING = 1;
+
+    /**
+     * ID
+     *
+     * @param id ID
+     */
+    public void setId(long id);
 
     /**
      * ID
@@ -43,6 +54,13 @@ public interface IAlermEntry extends Serializable {
     /**
      * 場所のID
      *
+     * @param locationId 場所のID
+     */
+    public void setLocationId(long locationId);
+
+    /**
+     * 場所のID
+     *
      * @return 場所のID
      */
     public long getLocationId();
@@ -50,9 +68,9 @@ public interface IAlermEntry extends Serializable {
     /**
      * 通知するタイミング
      *
-     * @return TIMING_ARRIVAL/TIMING_LEAVING
+     * @return TIMING_APPROACHING/TIMING_LEAVING
      */
-    public int getAlermTiming();
+    public int getAlarmTiming();
 
     /**
      * 通知のデフォルトプロパティ
@@ -109,4 +127,11 @@ public interface IAlermEntry extends Serializable {
      * @return 距離(m)
      */
     public double getDistance();
+
+    /**
+     * ステータス
+     *
+     * @param status ステータス
+     */
+    public void setStatus(int status);
 }

@@ -16,6 +16,10 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
      */
     public static final int STATUS_CLOSED = 1;
     /**
+     * 削除されたタスク
+     */
+    public static final int STATUS_DELETED = 2;
+    /**
      * 終日タスクではない
      */
     public static final int SCD_NOT_ALLDAY = 0;
@@ -31,6 +35,13 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
      * グーグルと同期するタスク
      */
     public static final int SYMC_GOOGLE = 1;
+
+    /**
+     * ID
+     *
+     * @param id ID
+     */
+    public void setId(long id);
 
     /**
      * ID
@@ -101,4 +112,11 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
      * @return 0:オープン<br>1:クローズ
      */
     public int getStatus();
+
+    /**
+     * ステータス
+     *
+     * @param status ステータス
+     */
+    public void setStatus(int status);
 }

@@ -7,4 +7,45 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+
+    <string name="label_title">Title</string>
+    <string name="label_description">Description</string>
+    <string name="label_status">Status</string>
+    <string name="label_closed">Status</string>
+    <string name="label_location">Location</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="label_longitude">Longitude</string>
+    <string name="label_notice">Notice</string>
+    <string name="label_distance">Distance</string>
+    <string name="label_sound">Sound</string>
+    <string name="label_vibration">Vibration</string>
+    <string name="label_pattern">Pattern</string>
+    <string name="label_light">Light</string>
+    <string name="label_meters">meters</string>
+    <string name="label_alarm">Alarm</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_detail">Detail</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_add">Add</string>
+    <string name="label_delete">Delete</string>
+
+
+    <string-array name="alarm_timing_values">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="alarm_timing_names">
+        <item>None</item>
+        <item>When approaching within</item>
+        <item>When leaving</item>
+    </string-array>
+    <string-array name="edit_todo_options">
+        <item>-</item>
+        <item>Add Location</item>
+        <item>Show Location List</item>
+        <item>Add Alarm</item>
+        <item>Show Alarm List</item>
+    </string-array>
 </resources>
