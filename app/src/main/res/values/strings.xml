@@ -11,7 +11,7 @@
     <string name="label_title">Title</string>
     <string name="label_description">Description</string>
     <string name="label_status">Status</string>
-    <string name="label_closed">Status</string>
+    <string name="label_closed">Closed</string>
     <string name="label_location">Location</string>
     <string name="label_latitude">Latitude</string>
     <string name="label_longitude">Longitude</string>
@@ -29,7 +29,9 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_add">Add</string>
     <string name="label_delete">Delete</string>
-
+    <string name="label_start">Start</string>
+    <string name="label_end">End</string>
+    <string name="label_allday">All Day</string>
 
     <string-array name="alarm_timing_values">
         <item>-1</item>

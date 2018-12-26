@@ -2,15 +2,20 @@ package kkimmg.locationtriggeredtodo;
 
 import android.app.Notification;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 
 /**
@@ -43,9 +48,32 @@ public class EditToDoFragment extends Fragment {
     private long mId;
 
     /**
+     * メディア配列
+     */
+    private String[][] mediaArray;
+
+    /**
+     * 日付変換文字列
+     *
+     * @return 日付変換文字列
+     */
+    private static String getDateFormat() {
+        return "yyyy/MM/dd";
+    }
+
+    /**
      * ToDoエントリ
      */
     private IToDoEntry mToDoEntry;
+
+    /**
+     * 時刻変換文字列
+     *
+     * @return 時刻変換文字列
+     */
+    private static String getTimeFormat() {
+        return "kk:mm:ss";
+    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -98,20 +126,35 @@ public class EditToDoFragment extends Fragment {
     private void readFromToDoEntry(View view, IToDoEntry toDoEntry) {
         EditText txtTitle = view.findViewById(R.id.txtEditToDoTitle);
         EditText txtDescription = view.findViewById(R.id.txtEditToDoDescription);
+        CheckBox chkAllDay = view.findViewById(R.id.chkEditToDoAllDay);
+        EditText txtStartDate = view.findViewById(R.id.txtEditToDoStartDate);
+        EditText txtStartTime = view.findViewById(R.id.txtEditToDoStartTime);
+        EditText txtEndDate = view.findViewById(R.id.txtEditToDoEndDate);
+        EditText txtEndTime = view.findViewById(R.id.txtEditToDoEndTime);
         CheckBox chkClosed = view.findViewById(R.id.chkToDoClosed);
         EditText txtLocation = view.findViewById(R.id.txtToDoLocationName);
         Spinner spnAlarmTiming = view.findViewById(R.id.spnEditToDoAlarmTiming);
         EditText txtDistance = view.findViewById(R.id.txtEditToDoDistance);
         CheckBox chkVibration = view.findViewById(R.id.chkEditToDoVibration);
-        Spinner spnVibration = view.findViewById(R.id.spnEditToDoVibration);
         CheckBox chkSound = view.findViewById(R.id.chkEditToDoSound);
         Spinner spnSound = view.findViewById(R.id.spnEditToDoSound);
         CheckBox chkLight = view.findViewById(R.id.chkEditToDoLight);
 
         txtTitle.setText(toDoEntry.getTitle());
         txtDescription.setText(toDoEntry.getDescription());
+        if (toDoEntry.getAllDay() == IToDoEntry.SCD_ALLDAY) {
+            chkClosed.setChecked(true);
+        }
         if (toDoEntry.getStatus() == IToDoEntry.STATUS_CLOSED) {
             chkClosed.setChecked(true);
+        }
+        if (toDoEntry.getStartMills() > 0) {
+            txtStartDate.setText(DateFormat.format(getDateFormat(), toDoEntry.getStartMills()));
+            txtStartTime.setText(DateFormat.format(getTimeFormat(), toDoEntry.getStartMills()));
+        }
+        if (toDoEntry.getEndMills() > 0) {
+            txtEndDate.setText(DateFormat.format(getDateFormat(), toDoEntry.getEndMills()));
+            txtEndTime.setText(DateFormat.format(getTimeFormat(), toDoEntry.getEndMills()));
         }
         if (toDoEntry.size() > 0) {
             ILocationEntry location = toDoEntry.get(0);
@@ -129,8 +172,42 @@ public class EditToDoFragment extends Fragment {
                 } else {
                     chkVibration.setChecked(false);
                 }
+                if (0 != (alarmEntry.getDefaults() & Notification.DEFAULT_SOUND)) {
+                    chkSound.setChecked(true);
+                    if (mediaArray != null && mediaArray.length > 0 && alarmEntry.getSound() != null) {
+                        for (int i = 0; i < mediaArray[1].length; i++) {
+                            if (alarmEntry.getSound().equals(mediaArray[1][i])) {
+                                spnSound.setSelection(i);
+                            }
+                        }
+                    }
+                } else {
+                    chkSound.setChecked(false);
+                }
+                if (0 != (alarmEntry.getDefaults() & Notification.DEFAULT_LIGHTS)) {
+                    chkLight.setChecked(true);
+                } else {
+                    chkLight.setChecked(false);
+                }
             }
         }
+    }
+
+    private String[][] getSoundArray(Context context) {
+        ArrayList<String> titles = new ArrayList<>();
+        ArrayList<String> uris = new ArrayList<>();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA}, null, null);
+        while (cursor.moveToNext()) {
+            String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+            String uritxt = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+            titles.add(title);
+            uris.add(uritxt);
+        }
+        String[][] ret = new String[2][];
+        ret[0] = titles.toArray(new String[titles.size()]);
+        ret[1] = uris.toArray(new String[uris.size()]);
+        return ret;
     }
 
     @Override

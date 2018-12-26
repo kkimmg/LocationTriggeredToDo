@@ -1,15 +1,17 @@
 package kkimmg.locationtriggeredtodo;
 
-import android.net.Uri;
+import android.graphics.Color;
 
 public class DefaultAlarmEntry implements IAlarmEntry {
+    public static final long[] DEFAULT_PATTERN = {0, 1000, 500, 1000, 500, 1000, 500};
+
     private long id = 0;
     private long locationId;
     private int alarmTiming;
     private int defaults;
-    private Uri sound;
-    private int lightArgb, lightOnMs, lightOffMs;
-    private long[] pattern;
+    private String sound;
+    private int lightArgb = Color.WHITE, lightOnMs = 100, lightOffMs = 100;
+    private long[] pattern = DEFAULT_PATTERN;
     private int status;
     private double distance;
 
@@ -95,7 +97,7 @@ public class DefaultAlarmEntry implements IAlarmEntry {
      * @return 再生する音声のUri
      */
     @Override
-    public Uri getSound() {
+    public String getSound() {
         return sound;
     }
 
@@ -104,7 +106,7 @@ public class DefaultAlarmEntry implements IAlarmEntry {
      *
      * @param sound 再生する音声のUri
      */
-    public void setSound(Uri sound) {
+    public void setSound(String sound) {
         this.sound = sound;
     }
 

@@ -1,7 +1,5 @@
 package kkimmg.locationtriggeredtodo;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 
 /**
@@ -84,7 +82,7 @@ public interface IAlarmEntry extends Serializable {
      *
      * @return 再生する音声のUri
      */
-    public Uri getSound();
+    public String getSound();
 
     /**
      * ライトの色
