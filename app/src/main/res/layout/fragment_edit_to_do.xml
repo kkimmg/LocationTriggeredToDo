@@ -24,29 +24,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/btnEditToDoCancel"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_gravity="left"
+                        android:text="@string/label_cancel" />
 
-                        <Button
-                            android:id="@+id/btnEditToDoCancel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_cancel" />
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
-                        <Button
-                            android:id="@+id/btnEditToDoOK"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_ok" />
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
-                    </LinearLayout>
+                    <Button
+                        android:id="@+id/btnEditToDoOK"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:text="@string/label_ok" />
+
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/tvEditTodoTitle"
@@ -60,7 +67,7 @@
                         android:id="@+id/txtEditToDoTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="3"
                         android:ems="10"
                         android:inputType="text"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +111,7 @@
                         android:id="@+id/chkEditToDoAllDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="4"
                         android:text="@string/label_allday" />
                 </TableRow>
 
@@ -122,6 +129,7 @@
                         android:id="@+id/txtEditToDoStartDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:ems="10"
                         android:inputType="date" />
 
@@ -129,6 +137,7 @@
                         android:id="@+id/txtEditToDoStartTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:ems="10"
                         android:inputType="time" />
 
@@ -311,7 +320,7 @@
                         android:id="@+id/spnEditToDoOptions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="4"
                         android:entries="@array/edit_todo_options" />
                 </TableRow>
 

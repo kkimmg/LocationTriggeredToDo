@@ -142,19 +142,29 @@ public class EditToDoFragment extends Fragment {
 
         txtTitle.setText(toDoEntry.getTitle());
         txtDescription.setText(toDoEntry.getDescription());
-        if (toDoEntry.getAllDay() == IToDoEntry.SCD_ALLDAY) {
-            chkClosed.setChecked(true);
-        }
         if (toDoEntry.getStatus() == IToDoEntry.STATUS_CLOSED) {
             chkClosed.setChecked(true);
+        } else {
+            chkClosed.setChecked(false);
+        }
+        if (toDoEntry.getAllDay() == IToDoEntry.SCD_ALLDAY) {
+            chkAllDay.setChecked(true);
+        } else {
+            chkAllDay.setChecked(false);
         }
         if (toDoEntry.getStartMills() > 0) {
             txtStartDate.setText(DateFormat.format(getDateFormat(), toDoEntry.getStartMills()));
             txtStartTime.setText(DateFormat.format(getTimeFormat(), toDoEntry.getStartMills()));
+        } else {
+            txtStartDate.setText("");
+            txtStartTime.setText("");
         }
         if (toDoEntry.getEndMills() > 0) {
             txtEndDate.setText(DateFormat.format(getDateFormat(), toDoEntry.getEndMills()));
             txtEndTime.setText(DateFormat.format(getTimeFormat(), toDoEntry.getEndMills()));
+        } else {
+            txtEndDate.setText("");
+            txtEndTime.setText("");
         }
         if (toDoEntry.size() > 0) {
             ILocationEntry location = toDoEntry.get(0);
@@ -162,9 +172,9 @@ public class EditToDoFragment extends Fragment {
             if (location.size() > 0) {
                 IAlarmEntry alarmEntry = location.get(0);
                 if (alarmEntry.getAlarmTiming() == IAlarmEntry.TIMING_APPROACHING) {
-                    spnAlarmTiming.setSelection(0);
-                } else {
                     spnAlarmTiming.setSelection(1);
+                } else {
+                    spnAlarmTiming.setSelection(2);
                 }
                 txtDistance.setText(String.valueOf(alarmEntry.getDistance()));
                 if (0 != (alarmEntry.getDefaults() & Notification.DEFAULT_VIBRATE)) {
@@ -181,16 +191,89 @@ public class EditToDoFragment extends Fragment {
                             }
                         }
                     }
-                } else {
-                    chkSound.setChecked(false);
                 }
                 if (0 != (alarmEntry.getDefaults() & Notification.DEFAULT_LIGHTS)) {
                     chkLight.setChecked(true);
                 } else {
                     chkLight.setChecked(false);
                 }
+            } else {
+                spnAlarmTiming.setSelection(0);
+                chkVibration.setChecked(false);
+                chkLight.setChecked(false);
+            }
+        } else {
+            txtLocation.setText("");
+            spnAlarmTiming.setSelection(0);
+            chkVibration.setChecked(false);
+            chkLight.setChecked(false);
+        }
+    }
+
+    /**
+     * 画面の値から項目の有効・無効を設定する
+     *
+     * @param view ビュー
+     */
+    private void setEnabledFromValue(View view) {
+        EditText txtTitle = view.findViewById(R.id.txtEditToDoTitle);
+        EditText txtDescription = view.findViewById(R.id.txtEditToDoDescription);
+        CheckBox chkAllDay = view.findViewById(R.id.chkEditToDoAllDay);
+        EditText txtStartDate = view.findViewById(R.id.txtEditToDoStartDate);
+        EditText txtStartTime = view.findViewById(R.id.txtEditToDoStartTime);
+        EditText txtEndDate = view.findViewById(R.id.txtEditToDoEndDate);
+        EditText txtEndTime = view.findViewById(R.id.txtEditToDoEndTime);
+        CheckBox chkClosed = view.findViewById(R.id.chkToDoClosed);
+        EditText txtLocation = view.findViewById(R.id.txtToDoLocationName);
+        Spinner spnAlarmTiming = view.findViewById(R.id.spnEditToDoAlarmTiming);
+        EditText txtDistance = view.findViewById(R.id.txtEditToDoDistance);
+        CheckBox chkVibration = view.findViewById(R.id.chkEditToDoVibration);
+        CheckBox chkSound = view.findViewById(R.id.chkEditToDoSound);
+        Spinner spnSound = view.findViewById(R.id.spnEditToDoSound);
+        CheckBox chkLight = view.findViewById(R.id.chkEditToDoLight);
+        Spinner spnEditToDoOptions = view.findViewById(R.id.spnEditToDoOptions);
+
+        {
+            txtTitle.setEnabled(!chkClosed.isChecked());
+            txtDescription.setEnabled(!chkClosed.isChecked());
+            chkAllDay.setEnabled(!chkClosed.isChecked());
+            txtStartDate.setEnabled(!chkClosed.isChecked());
+            txtStartTime.setEnabled(!chkClosed.isChecked());
+            txtEndDate.setEnabled(!chkClosed.isChecked());
+            txtEndTime.setEnabled(!chkClosed.isChecked());
+            txtLocation.setEnabled(!chkClosed.isChecked());
+            spnAlarmTiming.setEnabled(!chkClosed.isChecked());
+            txtDistance.setEnabled(!chkClosed.isChecked());
+            chkVibration.setEnabled(!chkClosed.isChecked());
+            chkSound.setEnabled(!chkClosed.isChecked());
+            spnSound.setEnabled(!chkClosed.isChecked());
+            chkLight.setEnabled(!chkClosed.isChecked());
+        }
+
+        if (!chkClosed.isChecked()) {
+            if (chkAllDay.isChecked()) {
+                txtStartDate.setEnabled(false);
+                txtStartDate.setText("");
+                txtStartTime.setEnabled(false);
+                txtStartTime.setText("");
+
+                txtEndDate.setEnabled(false);
+                txtEndDate.setText("");
+                txtEndTime.setEnabled(false);
+                txtEndTime.setText("");
+            } else {
+                txtStartDate.setEnabled(true);
+                txtStartTime.setEnabled(true);
+
+                txtEndDate.setEnabled(true);
+                txtEndTime.setEnabled(true);
             }
         }
+
+        {
+            spnSound.setEnabled(chkSound.isChecked());
+        }
+
     }
 
     private String[][] getSoundArray(Context context) {
