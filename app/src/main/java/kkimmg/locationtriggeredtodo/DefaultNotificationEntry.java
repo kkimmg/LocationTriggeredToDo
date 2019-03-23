@@ -2,7 +2,7 @@ package kkimmg.locationtriggeredtodo;
 
 import android.graphics.Color;
 
-public class DefaultAlarmEntry implements IAlarmEntry {
+public class DefaultNotificationEntry implements INotificationEntry {
     public static final long[] DEFAULT_PATTERN = {0, 1000, 500, 1000, 500, 1000, 500};
 
     private long id = 0;
@@ -59,7 +59,7 @@ public class DefaultAlarmEntry implements IAlarmEntry {
      * @return TIMING_APPROACHING/TIMING_LEAVING
      */
     @Override
-    public int getAlarmTiming() {
+    public int getNotificateTiming() {
         return alarmTiming;
     }
 

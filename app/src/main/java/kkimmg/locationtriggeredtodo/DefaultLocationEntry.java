@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 場所
  */
-public class DefaultLocationEntry extends ArrayList<IAlarmEntry> implements ILocationEntry {
+public class DefaultLocationEntry extends ArrayList<INotificationEntry> implements ILocationEntry {
     /**
      * ToDoId
      */
@@ -38,10 +38,10 @@ public class DefaultLocationEntry extends ArrayList<IAlarmEntry> implements ILoc
      * @return アラームのリスト
      */
     @Override
-    public List<IAlarmEntry> getAlermEntries(Location location) {
-        List<IAlarmEntry> ret = new ArrayList<>();
-        for (IAlarmEntry cld : this) {
-            if (cld.getStatus() == IAlarmEntry.STATUS_NOT_YET) {
+    public List<INotificationEntry> getNotificationEntries(Location location) {
+        List<INotificationEntry> ret = new ArrayList<>();
+        for (INotificationEntry cld : this) {
+            if (cld.getStatus() == INotificationEntry.STATUS_NOT_YET) {
                 if (isNearBy(location, cld.getDistance())) {
                     ret.add(cld);
                 }

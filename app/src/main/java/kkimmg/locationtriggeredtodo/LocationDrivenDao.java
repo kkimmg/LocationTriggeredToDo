@@ -23,9 +23,9 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      */
     public static final String TABLE_LOCATION = "LOCATION";
     /**
-     * アラームテーブル
+     * 通知テーブル
      */
-    public static final String TABLE_ALARM = "ALARM";
+    public static final String TABLE_NOTIFICATION = "NOTIFICATION";
     /**
      * 列名：ID
      */
@@ -85,11 +85,19 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     /**
      * 列名：
      */
+    public static final String COLUMN_BASEDON = "basedon";
+    /**
+     * 列名：
+     */
+    public static final String COLUMN_DEFAULT_LOCATION = "defaultlocation";
+    /**
+     * 列名：
+     */
     public static final String COLUMN_LOCATION_ID = "location_id";
     /**
      * 列名：
      */
-    public static final String COLUMN_ALARM_TIMING = "alarm_timing";
+    public static final String COLUMN_NOTIFICATE_TIMING = "alarm_timing";
     /**
      * 列名：
      */
@@ -113,7 +121,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     /**
      * 列名：
      */
-    public static final String COLUMN_ALARM_STATUS = "status";
+    public static final String COLUMN_NOTIFICATION_STATUS = "status";
     /**
      * 列名：
      */
@@ -122,6 +130,10 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      * 列名：パターン
      */
     public static final String COLUMN_PATTERN = "pattern";
+    /**
+     * 列名：パターン
+     */
+    public static final String COLUMN_DEFAULT_NOTIFICATION = "defaultnotification";
     /**
      * データベースファイル名
      */
@@ -155,6 +167,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_LOCATION + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_TODO_ID + " INTEGER," +
+                    COLUMN_BASEDON + " INTEGER," +
                     COLUMN_NAME + " TEXT," +
                     COLUMN_LATITUDE + " REAL," +
                     COLUMN_LONGITUDE + " REAL" +
@@ -162,19 +175,20 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     /**
      * アラーム情報を保持するテーブル
      */
-    private static final String SQL_CREATE_TABLE_ALARM =
-            "CREATE TABLE " + TABLE_ALARM + " (" +
+    private static final String SQL_CREATE_TABLE_NOTIFICATION =
+            "CREATE TABLE " + TABLE_NOTIFICATION + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_LOCATION_ID + " INTEGER," +
-                    COLUMN_ALARM_TIMING + " INTEGER," +
+                    COLUMN_NOTIFICATE_TIMING + " INTEGER," +
                     COLUMN_DEFAULTS + " INTEGER," +
                     COLUMN_PATTERN + "TEXT," +
                     COLUMN_SOUND + " TEXT," +
                     COLUMN_LIGHT_ARGB + " INTEGER," +
                     COLUMN_LIGHT_ONMS + " INTEGER," +
                     COLUMN_LIGHT_OFFMS + " INTEGER," +
-                    COLUMN_ALARM_STATUS + " INTEGER," +
-                    COLUMN_DISTANCE + " REAL" +
+                    COLUMN_NOTIFICATION_STATUS + " INTEGER," +
+                    COLUMN_DISTANCE + " REAL," +
+                    COLUMN_DEFAULT_NOTIFICATION + "INTEGER" +
                     ");";
     /**
      * データベースインスタンス
@@ -327,12 +341,14 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cv.put(COLUMN_NAME, locationEntry.getName());
         cv.put(COLUMN_LATITUDE, locationEntry.getLatitude());
         cv.put(COLUMN_LONGITUDE, locationEntry.getLongitude());
+        cv.put(COLUMN_BASEDON, locationEntry.getBaseedOn());
+        cv.put(COLUMN_DEFAULT_LOCATION, locationEntry.getDefaultLocation());
         long id = db.insert(TABLE_LOCATION, null, cv);
         locationEntry.setId(id);
 
-        for (IAlarmEntry alermEntry : locationEntry) {
+        for (INotificationEntry alermEntry : locationEntry) {
             alermEntry.setLocationId(id);
-            saveAlermEntry(alermEntry);
+            saveNotificationEntry(alermEntry);
         }
     }
 
@@ -348,11 +364,13 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cv.put(COLUMN_NAME, locationEntry.getName());
         cv.put(COLUMN_LATITUDE, locationEntry.getLatitude());
         cv.put(COLUMN_LONGITUDE, locationEntry.getLongitude());
+        cv.put(COLUMN_BASEDON, locationEntry.getBaseedOn());
+        cv.put(COLUMN_DEFAULT_LOCATION, locationEntry.getDefaultLocation());
         db.update(TABLE_LOCATION, cv, COLUMN_ID + " = ?", new String[]{String.valueOf(locationEntry.getId())});
 
-        for (IAlarmEntry alermEntry : locationEntry) {
+        for (INotificationEntry alermEntry : locationEntry) {
             alermEntry.setLocationId(locationEntry.getId());
-            saveAlermEntry(alermEntry);
+            saveNotificationEntry(alermEntry);
         }
     }
 
@@ -364,9 +382,9 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     public void deleteLocationEntry(ILocationEntry locationEntry) {
         db.delete(TABLE_LOCATION, COLUMN_ID + " = ?", new String[]{String.valueOf(locationEntry.getId())});
 
-        for (IAlarmEntry alermEntry : locationEntry) {
+        for (INotificationEntry alermEntry : locationEntry) {
             alermEntry.setLocationId(locationEntry.getId());
-            deleteAlermEntry(alermEntry);
+            deleteNotificationEntry(alermEntry);
         }
     }
 
@@ -375,16 +393,16 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      *
      * @param alermEntry アラーム
      */
-    public void saveAlermEntry(IAlarmEntry alermEntry) {
+    public void saveNotificationEntry(INotificationEntry alermEntry) {
         if (alermEntry.getId() <= 0) {
-            if (alermEntry.getStatus() != IAlarmEntry.STATUS_DELETED) {
-                insertAlermEntry(alermEntry);
+            if (alermEntry.getStatus() != INotificationEntry.STATUS_DELETED) {
+                insertNotificationEntry(alermEntry);
             }
         } else {
-            if (alermEntry.getStatus() != IAlarmEntry.STATUS_DELETED) {
-                updateAlermEntry(alermEntry);
+            if (alermEntry.getStatus() != INotificationEntry.STATUS_DELETED) {
+                updateNotificationEntry(alermEntry);
             } else {
-                deleteAlermEntry(alermEntry);
+                deleteNotificationEntry(alermEntry);
             }
         }
     }
@@ -394,17 +412,18 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      *
      * @param alermEntry アラーム
      */
-    public void insertAlermEntry(IAlarmEntry alermEntry) {
+    public void insertNotificationEntry(INotificationEntry alermEntry) {
         ContentValues cvAlerm = new ContentValues();
         cvAlerm.put(COLUMN_LOCATION_ID, alermEntry.getLocationId());
-        cvAlerm.put(COLUMN_ALARM_TIMING, alermEntry.getAlarmTiming());
+        cvAlerm.put(COLUMN_NOTIFICATE_TIMING, alermEntry.getNotificateTiming());
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
-        cvAlerm.put(COLUMN_ALARM_STATUS, alermEntry.getStatus());
+        cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
         cvAlerm.put(COLUMN_SOUND, (alermEntry.getSound()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
+        cvAlerm.put(COLUMN_DEFAULT_LOCATION, alermEntry.getDefaultNotification());
 
         StringBuffer patternBuf = new StringBuffer();
         String cm = "";
@@ -415,7 +434,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         }
         cvAlerm.put(COLUMN_PATTERN, patternBuf.toString());
 
-        long id = db.insert(TABLE_ALARM, null, cvAlerm);
+        long id = db.insert(TABLE_NOTIFICATION, null, cvAlerm);
         alermEntry.setId(id);
     }
 
@@ -424,18 +443,19 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      *
      * @param alermEntry アラーム
      */
-    public void updateAlermEntry(IAlarmEntry alermEntry) {
+    public void updateNotificationEntry(INotificationEntry alermEntry) {
         ContentValues cvAlerm = new ContentValues();
         cvAlerm.put(COLUMN_ID, alermEntry.getId());
         cvAlerm.put(COLUMN_LOCATION_ID, alermEntry.getLocationId());
-        cvAlerm.put(COLUMN_ALARM_TIMING, alermEntry.getAlarmTiming());
+        cvAlerm.put(COLUMN_NOTIFICATE_TIMING, alermEntry.getNotificateTiming());
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
-        cvAlerm.put(COLUMN_ALARM_STATUS, alermEntry.getStatus());
+        cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
         cvAlerm.put(COLUMN_SOUND, (alermEntry.getSound()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
+        cvAlerm.put(COLUMN_DEFAULT_LOCATION, alermEntry.getDefaultNotification());
 
         StringBuffer patternBuf = new StringBuffer();
         String cm = "";
@@ -446,7 +466,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         }
         cvAlerm.put(COLUMN_PATTERN, patternBuf.toString());
 
-        db.update(TABLE_ALARM, cvAlerm, COLUMN_ID + " = ?", new String[]{String.valueOf(alermEntry.getId())});
+        db.update(TABLE_NOTIFICATION, cvAlerm, COLUMN_ID + " = ?", new String[]{String.valueOf(alermEntry.getId())});
 
     }
 
@@ -455,8 +475,8 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      *
      * @param alermEntry アラーム
      */
-    public void deleteAlermEntry(IAlarmEntry alermEntry) {
-        db.delete(TABLE_ALARM, COLUMN_ID + " = ?", new String[]{String.valueOf(alermEntry.getId())});
+    public void deleteNotificationEntry(INotificationEntry alermEntry) {
+        db.delete(TABLE_NOTIFICATION, COLUMN_ID + " = ?", new String[]{String.valueOf(alermEntry.getId())});
     }
 
     /**
@@ -517,6 +537,17 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     }
 
     /**
+     * 場所カーソルの取得
+     * @param selection 検索条件
+     * @param values 検索条件の値
+     * @return カーソル
+     */
+    public Cursor getLocationCursor (String selection, String[] values) {
+        Cursor cursor = db.query(TABLE_LOCATION, null, selection, values, null, null, COLUMN_ID, null);
+        return cursor;
+    }
+
+    /**
      * 場所
      *
      * @param todoid ToDoID
@@ -532,7 +563,9 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             work.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             work.setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE)));
             work.setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE)));
-            work.addAll(getAlarmEntries(work.getId()));
+            work.setBasedOn(cursor.getInt(cursor.getColumnIndex(COLUMN_BASEDON)));
+            work.setDefaultLocation(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_LOCATION)));
+            work.addAll(getNotificationEntries(work.getId()));
             ret.add(work);
         }
         cursor.close();
@@ -555,7 +588,9 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             ret.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             ret.setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE)));
             ret.setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE)));
-            ret.addAll(getAlarmEntries(id));
+            ret.setBasedOn(cursor.getInt(cursor.getColumnIndex(COLUMN_BASEDON)));
+            ret.setDefaultLocation(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_LOCATION)));
+            ret.addAll(getNotificationEntries(id));
         }
         cursor.close();
         return ret;
@@ -567,16 +602,16 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      * @param locationid 場所ID
      * @return アラーム
      */
-    public List<IAlarmEntry> getAlarmEntries(long locationid) {
-        List<IAlarmEntry> ret = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_ALARM, null, COLUMN_LOCATION_ID + " = ?", new String[]{String.valueOf(locationid)}, null, null, COLUMN_ID, null);
+    public List<INotificationEntry> getNotificationEntries(long locationid) {
+        List<INotificationEntry> ret = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_NOTIFICATION, null, COLUMN_LOCATION_ID + " = ?", new String[]{String.valueOf(locationid)}, null, null, COLUMN_ID, null);
         while (cursor.moveToNext()) {
-            DefaultAlarmEntry work = new DefaultAlarmEntry();
+            DefaultNotificationEntry work = new DefaultNotificationEntry();
             work.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
             work.setLocationId(locationid);
-            work.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_ALARM_STATUS)));
+            work.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             work.setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)));
-            work.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_ALARM_STATUS)));
+            work.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             work.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
             String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUND));
             if (uristr != null && uristr.trim().length() > 0) {
@@ -585,6 +620,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             work.setLightArgb(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ARGB)));
             work.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));
             work.setLightOffMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_OFFMS)));
+            work.setDefaultNotification(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_NOTIFICATION)));
 
             work.setPattern(getPatterns(cursor.getString(cursor.getColumnIndex(COLUMN_PATTERN))));
             ret.add(work);
@@ -599,16 +635,16 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
      * @param id ID
      * @return アラーム
      */
-    public IAlarmEntry getAlarmEntry(long id) {
-        DefaultAlarmEntry ret = new DefaultAlarmEntry();
+    public INotificationEntry getNotificationEntry(long id) {
+        DefaultNotificationEntry ret = new DefaultNotificationEntry();
 
-        Cursor cursor = db.query(TABLE_ALARM, null, COLUMN_ID + " = ?", new String[]{String.valueOf(id)}, null, null, COLUMN_ID, null);
+        Cursor cursor = db.query(TABLE_NOTIFICATION, null, COLUMN_ID + " = ?", new String[]{String.valueOf(id)}, null, null, COLUMN_ID, null);
         if (cursor.moveToNext()) {
             ret.setId(id);
             ret.setLocationId(cursor.getLong(cursor.getColumnIndex(COLUMN_LOCATION_ID)));
-            ret.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_ALARM_TIMING)));
+            ret.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATE_TIMING)));
             ret.setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)));
-            ret.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_ALARM_STATUS)));
+            ret.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             ret.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
             String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUND));
             if (uristr != null && uristr.trim().length() > 0) {
@@ -618,6 +654,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             ret.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));
             ret.setLightOffMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_OFFMS)));
             ret.setPattern(getPatterns(cursor.getString(cursor.getColumnIndex(COLUMN_PATTERN))));
+            ret.setDefaultNotification(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_NOTIFICATION)));
         }
         cursor.close();
         return ret;
@@ -649,7 +686,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         try {
             sqLiteDatabase.execSQL(SQL_CREATE_TABLE_TODO);
             sqLiteDatabase.execSQL(SQL_CREATE_TABLE_LOCATION);
-            sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ALARM);
+            sqLiteDatabase.execSQL(SQL_CREATE_TABLE_NOTIFICATION);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

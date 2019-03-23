@@ -39,16 +39,16 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
     /**
      * ID
      *
-     * @param id ID
+     * @return ID
      */
-    public void setId(long id);
+    public long getId();
 
     /**
      * ID
      *
-     * @return ID
+     * @param id ID
      */
-    public long getId();
+    public void setId(long id);
 
     /**
      * 件名の取得
@@ -119,4 +119,60 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
      * @param status ステータス
      */
     public void setStatus(int status);
+
+    /**
+     * 件名の取得
+     *
+     * @param title 件名
+     */
+    public String setTitle(String title);
+
+    /**
+     * 説明の取得
+     *
+     * @param description 説明
+     */
+    public String setDescription(String description);
+
+    /**
+     * タスクの開始日の取得
+     *
+     * @param startMills タスクの開始日
+     */
+    public long setStartMills(long startMills);
+
+    /**
+     * タスクの終了日の取得
+     *
+     * @param endMills タスクの終了日
+     */
+    public long setEndMills(long endMills);
+
+    /**
+     * 終日タスクかどうか
+     *
+     * @param allDay 1:終日タスク<br>開始終了のあるタスク
+     */
+    public int setAllDay(int allDay);
+
+    /**
+     * グーグルカレンダーから取り込んだタスクかどうか
+     *
+     * @param syncType 1:取込タスク<br>0:単独タスク
+     */
+    public int setSyncType(int syncType);
+
+    /**
+     * グーグルのカレンダーID
+     *
+     * @param calenderId カレンダーID
+     */
+    public long setCalendarId(long calenderId);
+
+    /**
+     * グーグルのイベントID
+     *
+     * @param eventId イベントID
+     */
+    public long setEventId(long eventId);
 }

@@ -170,8 +170,8 @@ public class EditToDoFragment extends Fragment {
             ILocationEntry location = toDoEntry.get(0);
             txtLocation.setText(location.getName());
             if (location.size() > 0) {
-                IAlarmEntry alarmEntry = location.get(0);
-                if (alarmEntry.getAlarmTiming() == IAlarmEntry.TIMING_APPROACHING) {
+                INotificationEntry alarmEntry = location.get(0);
+                if (alarmEntry.getNotificateTiming() == INotificationEntry.TIMING_APPROACHING) {
                     spnAlarmTiming.setSelection(1);
                 } else {
                     spnAlarmTiming.setSelection(2);

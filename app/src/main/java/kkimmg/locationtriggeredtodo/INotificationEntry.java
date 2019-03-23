@@ -5,7 +5,15 @@ import java.io.Serializable;
 /**
  * 通知情報
  */
-public interface IAlarmEntry extends Serializable {
+public interface INotificationEntry extends Serializable {
+    /**
+     * デフォルトの通知ではありません
+     */
+    public static final int IS_NOT_DEFAULT_NOTIFICATION = 0;
+    /**
+     * デフォルトの通知です
+     */
+    public static final int IS_DEFAULT_NOTIFICATION = 1;
     /**
      * まだ通知されていない
      */
@@ -36,11 +44,18 @@ public interface IAlarmEntry extends Serializable {
     public static final int TIMING_LEAVING = 1;
 
     /**
-     * ID
+     * デフォルトの通知ですか？
      *
-     * @param id ID
+     * @return はい・いいえ
      */
-    public void setId(long id);
+    public int getDefaultNotification();
+
+    /**
+     * デフォルトの通知ですか？
+     *
+     * @param defaultNotification はい・いいえ
+     */
+    public void setDefaultNotification(int defaultNotification);
 
     /**
      * ID
@@ -50,11 +65,11 @@ public interface IAlarmEntry extends Serializable {
     public long getId();
 
     /**
-     * 場所のID
+     * ID
      *
-     * @param locationId 場所のID
+     * @param id ID
      */
-    public void setLocationId(long locationId);
+    public void setId(long id);
 
     /**
      * 場所のID
@@ -64,11 +79,18 @@ public interface IAlarmEntry extends Serializable {
     public long getLocationId();
 
     /**
+     * 場所のID
+     *
+     * @param locationId 場所のID
+     */
+    public void setLocationId(long locationId);
+
+    /**
      * 通知するタイミング
      *
      * @return TIMING_APPROACHING/TIMING_LEAVING
      */
-    public int getAlarmTiming();
+    public int getNotificateTiming();
 
     /**
      * 通知のデフォルトプロパティ
@@ -120,16 +142,16 @@ public interface IAlarmEntry extends Serializable {
     public int getStatus();
 
     /**
-     * 範囲内化どうか判定するための距離
-     *
-     * @return 距離(m)
-     */
-    public double getDistance();
-
-    /**
      * ステータス
      *
      * @param status ステータス
      */
     public void setStatus(int status);
+
+    /**
+     * 範囲内化どうか判定するための距離
+     *
+     * @return 距離(m)
+     */
+    public double getDistance();
 }

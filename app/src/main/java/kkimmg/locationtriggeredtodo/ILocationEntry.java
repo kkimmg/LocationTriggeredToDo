@@ -8,7 +8,15 @@ import java.util.List;
 /**
  * ロケーション
  */
-public interface ILocationEntry extends Serializable, List<IAlarmEntry> {
+public interface ILocationEntry extends Serializable, List<INotificationEntry> {
+    /**
+     * 名前基準
+     */
+    public static final int BASE_NAME = 0;
+    /**
+     * 座標基準
+     */
+    public static final int BASE_LOCATION = 1;
     /**
      * 削除されていない
      */
@@ -18,11 +26,41 @@ public interface ILocationEntry extends Serializable, List<IAlarmEntry> {
      */
     public static final int STATUS_DELETED = 1;
     /**
+     * デフォルトのロケーションではありません
+     */
+    public static final int IS_NOT_DEFAULT_LOCATION = 0;
+    /**
+     * デフォルトのロケーションです
+     */
+    public static final int IS_DEFAULT_LOCATION = 1;
+
+    /**
+     * 名前基準／場所基準
+     *
+     * @return 名前基準／場所基準
+     */
+    public int getBaseedOn();
+
+    /**
+     * 名前基準／場所基準
+     *
+     * @param base 名前基準／場所基準
+     */
+    public void setBasedOn(int base);
+
+    /**
      * IDの取得
      *
      * @return ID
      */
     public long getId();
+
+    /**
+     * ID
+     *
+     * @param id ID
+     */
+    public void setId(long id);
 
     /**
      * 名前
@@ -38,14 +76,7 @@ public interface ILocationEntry extends Serializable, List<IAlarmEntry> {
      * @param location 位置
      * @return アラームのリスト
      */
-    public List<IAlarmEntry> getAlermEntries(Location location);
-
-    /**
-     * ID
-     *
-     * @param id ID
-     */
-    public void setId(long id);
+    public List<INotificationEntry> getNotificationEntries(Location location);
 
     /**
      * 一番近くのロケーションを返却する
@@ -96,4 +127,19 @@ public interface ILocationEntry extends Serializable, List<IAlarmEntry> {
      * @param status ステータス
      */
     public void setStatus(int status);
+
+    /**
+     * デフォルトのロケーションですか？
+     *
+     * @return デフオルトかどうか
+     */
+    public int getDefaultLocation();
+
+    /**
+     * デフォルトのロケーションですか？
+     *
+     * @param isDefault デフオルトかどうか
+     */
+    public void setDefaultLocation(int isDefault);
+
 }
