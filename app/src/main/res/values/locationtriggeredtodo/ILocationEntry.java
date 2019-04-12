@@ -70,6 +70,13 @@ public interface ILocationEntry extends Serializable, List<INotificationEntry> {
     public String getName();
 
     /**
+     * 名前
+     *
+     * @param name 名前
+     */
+    public void setName(String name);
+
+    /**
      * 範囲内にあるか？
      * あれば、対象の（通知前の）アラームをリストで返却する
      *
@@ -94,11 +101,25 @@ public interface ILocationEntry extends Serializable, List<INotificationEntry> {
     public double getLatitude();
 
     /**
+     * 緯度の取得
+     *
+     * @param latitude 緯度
+     */
+    public void setLatitude(double latitude);
+
+    /**
      * 経度の取得
      *
      * @return 経度
      */
     public double getLongitude();
+
+    /**
+     * 経度の取得
+     *
+     * @param longitude 経度
+     */
+    public void setLongitude(double longitude);
 
     /**
      * ToDoへの
@@ -142,4 +163,16 @@ public interface ILocationEntry extends Serializable, List<INotificationEntry> {
      */
     public void setDefaultLocation(int isDefault);
 
+    /**
+     * デフォルトの通知を取得する
+     * @return デフォルトの通知
+     */
+    public INotificationEntry getDefaultNotificationEntry ();
+
+    /**
+     * デフォルトの通知を取得する
+     * @param add なければ追加する
+     * @return デフォルトの通知
+     */
+    public INotificationEntry getDefaultNotificationEntry (boolean add);
 }

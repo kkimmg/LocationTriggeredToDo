@@ -184,9 +184,9 @@ public class EditToDoFragment extends Fragment {
                 }
                 if (0 != (alarmEntry.getDefaults() & Notification.DEFAULT_SOUND)) {
                     chkSound.setChecked(true);
-                    if (mediaArray != null && mediaArray.length > 0 && alarmEntry.getSound() != null) {
+                    if (mediaArray != null && mediaArray.length > 0 && alarmEntry.getSoundId() != null) {
                         for (int i = 0; i < mediaArray[1].length; i++) {
-                            if (alarmEntry.getSound().equals(mediaArray[1][i])) {
+                            if (alarmEntry.getSoundId().equals(mediaArray[1][i])) {
                                 spnSound.setSelection(i);
                             }
                         }

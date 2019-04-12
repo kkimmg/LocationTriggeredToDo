@@ -7,13 +7,27 @@ public class DefaultNotificationEntry implements INotificationEntry {
 
     private long id = 0;
     private long locationId;
-    private int alarmTiming;
+    private int notificateTiming;
     private int defaults;
-    private String sound;
+    private String soundText;
     private int lightArgb = Color.WHITE, lightOnMs = 100, lightOffMs = 100;
     private long[] pattern = DEFAULT_PATTERN;
     private int status;
     private double distance;
+    private int defaultNotification;
+    private int light;
+    private int sound;
+    private int vibration;
+
+    @Override
+    public int getDefaultNotification() {
+        return defaultNotification;
+    }
+
+    @Override
+    public void setDefaultNotification(int defaultNotification) {
+        this.defaultNotification = defaultNotification;
+    }
 
     /**
      * ID
@@ -60,16 +74,16 @@ public class DefaultNotificationEntry implements INotificationEntry {
      */
     @Override
     public int getNotificateTiming() {
-        return alarmTiming;
+        return notificateTiming;
     }
 
     /**
      * 通知するタイミング
      *
-     * @param alarmTiming 通知するタイミング
+     * @param notificateTiming 通知するタイミング
      */
-    public void setAlarmTiming(int alarmTiming) {
-        this.alarmTiming = alarmTiming;
+    public void setNotificateTiming(int notificateTiming) {
+        this.notificateTiming = notificateTiming;
     }
 
     /**
@@ -97,17 +111,17 @@ public class DefaultNotificationEntry implements INotificationEntry {
      * @return 再生する音声のUri
      */
     @Override
-    public String getSound() {
-        return sound;
+    public String getSoundId() {
+        return soundText;
     }
 
     /**
      * 再生する音声のUri
      *
-     * @param sound 再生する音声のUri
+     * @param soundId 再生する音声のUri
      */
-    public void setSound(String sound) {
-        this.sound = sound;
+    public void setSoundId(String soundId) {
+        this.soundText = soundId;
     }
 
     /**
@@ -217,5 +231,29 @@ public class DefaultNotificationEntry implements INotificationEntry {
      */
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public int getLight() {
+        return light;
+    }
+
+    public void setLight(int light) {
+        this.light = light;
+    }
+
+    public int getSound() {
+        return sound;
+    }
+
+    public void setSound(int sound) {
+        this.sound = sound;
+    }
+
+    public int getVibration() {
+        return vibration;
+    }
+
+    public void setVibration(int vibration) {
+        this.vibration = vibration;
     }
 }

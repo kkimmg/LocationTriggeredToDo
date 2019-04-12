@@ -125,54 +125,69 @@ public interface IToDoEntry extends Serializable, List<ILocationEntry> {
      *
      * @param title 件名
      */
-    public String setTitle(String title);
+    public void setTitle(String title);
 
     /**
      * 説明の取得
      *
      * @param description 説明
      */
-    public String setDescription(String description);
+    public void setDescription(String description);
 
     /**
      * タスクの開始日の取得
      *
      * @param startMills タスクの開始日
      */
-    public long setStartMills(long startMills);
+    public void setStartMills(long startMills);
 
     /**
      * タスクの終了日の取得
      *
      * @param endMills タスクの終了日
      */
-    public long setEndMills(long endMills);
+    public void setEndMills(long endMills);
 
     /**
      * 終日タスクかどうか
      *
      * @param allDay 1:終日タスク<br>開始終了のあるタスク
      */
-    public int setAllDay(int allDay);
+    public void setAllDay(int allDay);
 
     /**
      * グーグルカレンダーから取り込んだタスクかどうか
      *
      * @param syncType 1:取込タスク<br>0:単独タスク
      */
-    public int setSyncType(int syncType);
+    public void setSyncType(int syncType);
 
     /**
      * グーグルのカレンダーID
      *
      * @param calenderId カレンダーID
      */
-    public long setCalendarId(long calenderId);
+    public void setCalendarId(long calenderId);
 
     /**
      * グーグルのイベントID
      *
      * @param eventId イベントID
      */
-    public long setEventId(long eventId);
+    public void setEventId(long eventId);
+
+    /**
+     * デフォルトのロケーションを取得する
+     * @return デフォルトのロケーション
+     */
+    public ILocationEntry getDefaultLocationEntry ();
+
+    /**
+     * デフォルトのロケーションを取得する
+     * @param add なければ追加する
+     * @return デフォルトのロケーション
+     */
+    public ILocationEntry getDefaultLocationEntry (boolean add);
+
+
 }

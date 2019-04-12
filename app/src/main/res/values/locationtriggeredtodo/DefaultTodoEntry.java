@@ -11,6 +11,39 @@ public class DefaultTodoEntry extends ArrayList<ILocationEntry> implements IToDo
     private long startMills, endMills;
     private int allDay, syncType, status;
 
+    @Override
+    public ILocationEntry getDefaultLocationEntry() {
+        ILocationEntry ret = null;
+        for (ILocationEntry locationEntry : this) {
+            if (locationEntry.getDefaultLocation() == ILocationEntry.IS_DEFAULT_LOCATION) {
+                if (ret != null) {
+                    ret.setDefaultLocation(ILocationEntry.IS_NOT_DEFAULT_LOCATION);
+                }
+                ret = locationEntry;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ILocationEntry getDefaultLocationEntry(boolean addFlg) {
+        ILocationEntry ret = getDefaultLocationEntry();
+        if (ret == null && addFlg) {
+            ret = createLocationEntry ();
+            ret.setDefaultLocation(ILocationEntry.IS_DEFAULT_LOCATION);
+            add(ret);
+        }
+        return null;
+    }
+
+    /**
+     * 位置の作成
+     * @return 位置
+     */
+    protected ILocationEntry createLocationEntry () {
+        return new DefaultLocationEntry();
+    }
+
     /**
      * ID
      *

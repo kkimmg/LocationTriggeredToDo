@@ -29,6 +29,8 @@ public class DefaultLocationEntry extends ArrayList<INotificationEntry> implemen
      * 状態
      */
     private int status;
+    private int base;
+    private int isDefault;
 
     /**
      * 範囲内にあるか？
@@ -48,6 +50,26 @@ public class DefaultLocationEntry extends ArrayList<INotificationEntry> implemen
             }
         }
         return ret;
+    }
+
+    @Override
+    public int getBaseedOn() {
+        return base;
+    }
+
+    @Override
+    public void setBasedOn(int base) {
+        this.base = base;
+    }
+
+    @Override
+    public int getDefaultLocation() {
+        return isDefault;
+    }
+
+    @Override
+    public void setDefaultLocation(int isDefault) {
+        this.isDefault = isDefault;
     }
 
     /**
@@ -177,6 +199,39 @@ public class DefaultLocationEntry extends ArrayList<INotificationEntry> implemen
     @Override
     public int getStatus() {
         return status;
+    }
+
+    @Override
+    public INotificationEntry getDefaultNotificationEntry() {
+        INotificationEntry ret = null;
+        for (INotificationEntry notificationEntry: this) {
+            if (notificationEntry.getDefaultNotification() == INotificationEntry.IS_DEFAULT_NOTIFICATION) {
+                if (ret != null) {
+                    ret.setDefaultNotification(INotificationEntry.IS_NOT_DEFAULT_NOTIFICATION);
+                }
+                ret = notificationEntry;
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public INotificationEntry getDefaultNotificationEntry(boolean addFlg) {
+        INotificationEntry ret = getDefaultNotificationEntry();
+        if (ret == null && addFlg) {
+            ret = createLocationEntry();
+            ret.setDefaultNotification(INotificationEntry.IS_DEFAULT_NOTIFICATION);
+            add(ret);
+        }
+        return ret;
+    }
+
+    /**
+     * 通知を作成する
+     * @return 通知
+     */
+    protected INotificationEntry createLocationEntry () {
+        return new DefaultNotificationEntry();
     }
 
     /**

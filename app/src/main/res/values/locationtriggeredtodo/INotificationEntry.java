@@ -7,6 +7,18 @@ import java.io.Serializable;
  */
 public interface INotificationEntry extends Serializable {
     /**
+     * デフォルトの振動パターン
+     */
+    public static final long[] DEFAULT_PATTERN = {100, 100, 100, 100};
+    /**
+     * 有効
+     */
+    public static final int CHECK_ENABLED = 1;
+    /**
+     * 無効
+     */
+    public static final int CHECK_DISABLED = 0;
+    /**
      * デフォルトの通知ではありません
      */
     public static final int IS_NOT_DEFAULT_NOTIFICATION = 0;
@@ -93,6 +105,13 @@ public interface INotificationEntry extends Serializable {
     public int getNotificateTiming();
 
     /**
+     * 通知するタイミング
+     *
+     * @param notificationTiming TIMING_APPROACHING/TIMING_LEAVING
+     */
+    public void setNotificateTiming(int notificationTiming);
+
+    /**
      * 通知のデフォルトプロパティ
      *
      * @return 通知のデフォルトプロパティ
@@ -100,11 +119,25 @@ public interface INotificationEntry extends Serializable {
     public int getDefaults();
 
     /**
+     * 通知のデフォルトプロパティ
+     *
+     * @param defaults 通知のデフォルトプロパティ
+     */
+    public void setDefaults(int defaults);
+
+    /**
      * 再生する音声のUri
      *
-     * @return 再生する音声のUri
+     * @return 再生する音声のID
      */
-    public String getSound();
+    public String getSoundId();
+
+    /**
+     * 再生する音声のUri
+     *
+     * @param soundId 再生する音声のID
+     */
+    public void setSoundId(String soundId);
 
     /**
      * ライトの色
@@ -114,11 +147,25 @@ public interface INotificationEntry extends Serializable {
     public int getLightArgb();
 
     /**
+     * ライトの色
+     *
+     * @param lightArgb ライトの色
+     */
+    public void setLightArgb(int lightArgb);
+
+    /**
      * ライトの点灯時間
      *
      * @return ライトの点灯時間
      */
     public int getLightOnMs();
+
+    /**
+     * ライトの点灯時間
+     *
+     * @param lightOnMs ライトの点灯時間
+     */
+    public void setLightOnMs(int lightOnMs);
 
     /**
      * ライトの消灯時間
@@ -128,11 +175,25 @@ public interface INotificationEntry extends Serializable {
     public int getLightOffMs();
 
     /**
+     * ライトの消灯時間
+     *
+     * @param lightOffMs ライトの消灯時間
+     */
+    public void setLightOffMs(int lightOffMs);
+
+    /**
      * 振動パターン
      *
      * @return 振動パターン
      */
     public long[] getPattern();
+
+    /**
+     * 振動パターン
+     *
+     * @param pattern 振動パターン
+     */
+    public void setPattern(long[] pattern);
 
     /**
      * 状態
@@ -154,4 +215,53 @@ public interface INotificationEntry extends Serializable {
      * @return 距離(m)
      */
     public double getDistance();
+
+    /**
+     * 範囲内化どうか判定するための距離
+     *
+     * @param distance 距離(m)
+     */
+    public void setDistance(double distance);
+
+    /**
+     * ライトを使う
+     *
+     * @return 使う／使わない
+     */
+    public int getLight();
+
+    /**
+     * ライトを使う
+     *
+     * @param light 使う／使わない
+     */
+    public void setLight(int light);
+
+    /**
+     * サウンドを使う
+     *
+     * @return 使う／使わない
+     */
+    public int getSound();
+
+    /**
+     * サウンドを使う
+     *
+     * @param sound 使う／使わない
+     */
+    public void setSound(int sound);
+
+    /**
+     * 振動を使う
+     *
+     * @return 使う／使わない
+     */
+    public int getVibration();
+
+    /**
+     * 振動を使う
+     *
+     * @param vibration 使う／使わない
+     */
+    public void setVibration(int vibration);
 }

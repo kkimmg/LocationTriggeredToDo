@@ -105,7 +105,18 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
     /**
      * 列名：
      */
-    public static final String COLUMN_SOUND = "sound";
+    public static final String COLUMN_SOUND =            "sound";    /**
+     * 列名：
+     */
+    public static final String COLUMN_VIBRATION =            "vibration";    /**
+     * 列名：
+     */
+    public static final String COLUMN_LIGHT =            "light";
+
+    /**
+     * 列名：
+     */
+    public static final String COLUMN_SOUNDTEXT =            "soundtext";
     /**
      * 列名：
      */
@@ -182,13 +193,16 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
                     COLUMN_NOTIFICATE_TIMING + " INTEGER," +
                     COLUMN_DEFAULTS + " INTEGER," +
                     COLUMN_PATTERN + "TEXT," +
-                    COLUMN_SOUND + " TEXT," +
+                    COLUMN_SOUNDTEXT + " TEXT," +
                     COLUMN_LIGHT_ARGB + " INTEGER," +
                     COLUMN_LIGHT_ONMS + " INTEGER," +
                     COLUMN_LIGHT_OFFMS + " INTEGER," +
                     COLUMN_NOTIFICATION_STATUS + " INTEGER," +
                     COLUMN_DISTANCE + " REAL," +
-                    COLUMN_DEFAULT_NOTIFICATION + "INTEGER" +
+                    COLUMN_DEFAULT_NOTIFICATION + "INTEGER," +
+                    COLUMN_VIBRATION + "INTEGER," +
+                    COLUMN_SOUND + "INTEGER," +
+                    COLUMN_LIGHT + "INTEGER" +
                     ");";
     /**
      * データベースインスタンス
@@ -419,11 +433,14 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
         cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
-        cvAlerm.put(COLUMN_SOUND, (alermEntry.getSound()));
+        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundText()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
         cvAlerm.put(COLUMN_DEFAULT_LOCATION, alermEntry.getDefaultNotification());
+        cvAlerm.put(COLUMN_LIGHT, alermEntry.getLight());
+        cvAlerm.put(COLUMN_VIBRATION, alermEntry.getVibration());
+        cvAlerm.put(COLUMN_SOUND, alermEntry.getSound());
 
         StringBuffer patternBuf = new StringBuffer();
         String cm = "";
@@ -451,11 +468,14 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
         cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
-        cvAlerm.put(COLUMN_SOUND, (alermEntry.getSound()));
+        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundText()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
         cvAlerm.put(COLUMN_DEFAULT_LOCATION, alermEntry.getDefaultNotification());
+        cvAlerm.put(COLUMN_LIGHT, alermEntry.getLight());
+        cvAlerm.put(COLUMN_VIBRATION, alermEntry.getVibration());
+        cvAlerm.put(COLUMN_SOUND, alermEntry.getSound());
 
         StringBuffer patternBuf = new StringBuffer();
         String cm = "";
@@ -609,18 +629,21 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             DefaultNotificationEntry work = new DefaultNotificationEntry();
             work.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
             work.setLocationId(locationid);
-            work.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
+            work.setNotificateTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             work.setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)));
             work.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             work.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
-            String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUND));
+            String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUNDTEXT));
             if (uristr != null && uristr.trim().length() > 0) {
-                work.setSound(uristr);
+                work.setSoundText(uristr);
             }
             work.setLightArgb(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ARGB)));
             work.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));
             work.setLightOffMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_OFFMS)));
             work.setDefaultNotification(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_NOTIFICATION)));
+            work.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT)));
+            work.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_VIBRATION)));
+            work.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_SOUND)));
 
             work.setPattern(getPatterns(cursor.getString(cursor.getColumnIndex(COLUMN_PATTERN))));
             ret.add(work);
@@ -642,19 +665,22 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         if (cursor.moveToNext()) {
             ret.setId(id);
             ret.setLocationId(cursor.getLong(cursor.getColumnIndex(COLUMN_LOCATION_ID)));
-            ret.setAlarmTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATE_TIMING)));
+            ret.setNotificateTiming(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATE_TIMING)));
             ret.setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)));
             ret.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_NOTIFICATION_STATUS)));
             ret.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
-            String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUND));
+            String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUNDTEXT));
             if (uristr != null && uristr.trim().length() > 0) {
-                ret.setSound(uristr);
+                ret.setSoundText(uristr);
             }
             ret.setLightArgb(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ARGB)));
             ret.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));
             ret.setLightOffMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_OFFMS)));
             ret.setPattern(getPatterns(cursor.getString(cursor.getColumnIndex(COLUMN_PATTERN))));
             ret.setDefaultNotification(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULT_NOTIFICATION)));
+            ret.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT)));
+            ret.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_VIBRATION)));
+            ret.setLight(cursor.getInt(cursor.getColumnIndex(COLUMN_SOUND)));
         }
         cursor.close();
         return ret;
