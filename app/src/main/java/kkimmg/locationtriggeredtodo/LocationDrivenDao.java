@@ -433,7 +433,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
         cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
-        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundText()));
+        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundId()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
@@ -468,7 +468,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
         cvAlerm.put(COLUMN_DEFAULTS, alermEntry.getDefaults());
         cvAlerm.put(COLUMN_DISTANCE, alermEntry.getDistance());
         cvAlerm.put(COLUMN_NOTIFICATION_STATUS, alermEntry.getStatus());
-        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundText()));
+        cvAlerm.put(COLUMN_SOUNDTEXT, (alermEntry.getSoundId()));
         cvAlerm.put(COLUMN_LIGHT_ARGB, alermEntry.getLightArgb());
         cvAlerm.put(COLUMN_LIGHT_ONMS, alermEntry.getLightOnMs());
         cvAlerm.put(COLUMN_LIGHT_OFFMS, alermEntry.getLightOffMs());
@@ -635,7 +635,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             work.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
             String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUNDTEXT));
             if (uristr != null && uristr.trim().length() > 0) {
-                work.setSoundText(uristr);
+                work.setSoundId(uristr);
             }
             work.setLightArgb(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ARGB)));
             work.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));
@@ -671,7 +671,7 @@ public class LocationDrivenDao extends SQLiteOpenHelper {
             ret.setDefaults(cursor.getInt(cursor.getColumnIndex(COLUMN_DEFAULTS)));
             String uristr = cursor.getString(cursor.getColumnIndex(COLUMN_SOUNDTEXT));
             if (uristr != null && uristr.trim().length() > 0) {
-                ret.setSoundText(uristr);
+                ret.setSoundId(uristr);
             }
             ret.setLightArgb(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ARGB)));
             ret.setLightOnMs(cursor.getInt(cursor.getColumnIndex(COLUMN_LIGHT_ONMS)));

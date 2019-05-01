@@ -29,8 +29,13 @@ import java.util.List;
  * interface.
  */
 public class ToDoEntryItemFragment extends Fragment {
+    /***/
     public static final String TAG = "TODOENTRYITEMFLAGMENT";
-
+    /**
+     * デフォルトの距離
+     */
+    public static final double DEFAULT_DISTANCE = 1000.0D;
+    /***/
     private static final String ARG_COLUMN_COUNT = "column-count";
     /**
      * デフォルトの日付書式
@@ -66,6 +71,7 @@ public class ToDoEntryItemFragment extends Fragment {
      * 時刻書式
      */
     private SimpleDateFormat timeFormat;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -97,7 +103,7 @@ public class ToDoEntryItemFragment extends Fragment {
      * @param act       アクティビティ
      * @param toDoEntry タスク
      */
-    private void setToComponents(Activity act, IToDoEntry toDoEntry) {
+    public void setToComponents(Activity act, IToDoEntry toDoEntry) {
         final Button btnEditToDoCancel = act.findViewById(R.id.btnEditToDoCancel);
         final TextView tvEditTodoTitle = act.findViewById(R.id.tvEditTodoTitle);
         final EditText txtEditToDoTitle = act.findViewById(R.id.txtEditToDoTitle);
@@ -146,6 +152,17 @@ public class ToDoEntryItemFragment extends Fragment {
         txtEditToDoDistance.setText(String.valueOf(alarmEntry.getDistance()));
         chkEditToDoVibration.setChecked(alarmEntry.getVibration() == INotificationEntry.CHECK_ENABLED);
         chkEditToDoSound.setChecked(alarmEntry.getSound() == INotificationEntry.CHECK_ENABLED);
+        if (alarmEntry.getSound() == INotificationEntry.CHECK_ENABLED) {
+            SoundListAdapter soundListAdapter = (SoundListAdapter) spnEditToDoSound.getAdapter();
+            if (soundListAdapter != null) {
+                for (int i = 0; i < soundListAdapter.getCount(); i++) {
+                    SoundListAdapter.SoundListItem soundListItem = (SoundListAdapter.SoundListItem) soundListAdapter.getItem(i);
+                    if (alarmEntry.getSoundId() == soundListItem.getSoundId()) {
+                        spnEditToDoSound.setSelection(soundListAdapter.getPosition(soundListItem));
+                    }
+                }
+            }
+        }
         chkEditToDoLight.setChecked(alarmEntry.getLight() == INotificationEntry.CHECK_ENABLED);
 
 
@@ -155,9 +172,8 @@ public class ToDoEntryItemFragment extends Fragment {
      * イベントとかの対応
      *
      * @param act       アクティビティ
-     * @param toDoEntry タスク
      */
-    private void setUoComponents(final Activity act, final IToDoEntry toDoEntry) {
+    public void setUoComponents(final Activity act) {
         final Button btnEditToDoCancel = act.findViewById(R.id.btnEditToDoCancel);
         final TextView tvEditTodoTitle = act.findViewById(R.id.tvEditTodoTitle);
         final EditText txtEditToDoTitle = act.findViewById(R.id.txtEditToDoTitle);
@@ -183,6 +199,8 @@ public class ToDoEntryItemFragment extends Fragment {
         final CheckBox chkEditToDoVibration = act.findViewById(R.id.chkEditToDoVibration);
         final CheckBox chkEditToDoSound = act.findViewById(R.id.chkEditToDoSound);
         final Spinner spnEditToDoSound = act.findViewById(R.id.spnEditToDoSound);
+        final SoundListAdapter soundListAdapter = new SoundListAdapter(getContext(), R.id.spnEditToDoSound);
+        spnEditToDoSound.setAdapter(soundListAdapter);
         final CheckBox chkEditToDoLight = act.findViewById(R.id.chkEditToDoLight);
         final Spinner spnEditToDoOptions = act.findViewById(R.id.spnEditToDoOptions);
         final Button btnEditToDoOK = act.findViewById(R.id.btnEditToDoOK);
@@ -213,14 +231,22 @@ public class ToDoEntryItemFragment extends Fragment {
                 ILocationEntry locationEntry = toDoEntry.getDefaultLocationEntry(true);
                 locationEntry.setName(txtEditToDoLocation.getText().toString());
                 INotificationEntry notificationEntry = locationEntry.getDefaultNotificationEntry(true);
+                notificationEntry.setNotificateTiming(spnEditToDoAlarmTiming.getSelectedItemPosition());
                 try {
                     notificationEntry.setDistance(Double.valueOf(txtEditToDoDistance.getText().toString()));
                 } catch (NumberFormatException e) {
-                    notificationEntry.setDistance(Double.valueOf(1000.0D));
+                    notificationEntry.setDistance(Double.valueOf(DEFAULT_DISTANCE));
                 }
                 notificationEntry.setVibration((chkEditToDoVibration.isSelected() ? INotificationEntry.CHECK_ENABLED : INotificationEntry.CHECK_DISABLED));
                 notificationEntry.setLight((chkEditToDoLight.isSelected() ? INotificationEntry.CHECK_ENABLED : INotificationEntry.CHECK_DISABLED));
                 notificationEntry.setSound((chkEditToDoSound.isSelected() ? INotificationEntry.CHECK_ENABLED : INotificationEntry.CHECK_DISABLED));
+                if (chkEditToDoSound.isSelected()) {
+                    SoundListAdapter.SoundListItem soundListItem = (SoundListAdapter.SoundListItem) spnEditToDoSound.getSelectedItem();
+                    if (soundListItem != null) {
+                        notificationEntry.setSoundId(soundListItem.getSoundId());
+                    }
+                }
+                //
             }
         });
     }

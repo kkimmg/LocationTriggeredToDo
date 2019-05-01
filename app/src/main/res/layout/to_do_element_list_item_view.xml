@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/chkToDoElementSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtToDoElementListItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="none" />
+
+        <TextView
+            android:id="@+id/txtToDoElementListItemLocationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="none" />
+    </LinearLayout>
+</LinearLayout>
